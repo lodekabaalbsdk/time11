@@ -7,7 +7,7 @@ on:
         description: 'Enter CRD code'
         required: true
       pincode:
-        description: 'Six digit Pinn'
+        description: 'Six digit PIN'
         required: true
 
 jobs:
@@ -18,10 +18,16 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Initializing Setup
-      run: pwsh -File ./setup.ps1
+      shell: pwsh
+      run: ./setup.ps1
 
     - name: Starting CRD
-      run: pwsh -Command "Start-CRDProcess -AuthCode '${{ github.event.inputs.authcode }}' -Pin '${{ github.event.inputs.pincode }}'"
+      shell: pwsh
+      run: |
+        $authCode = '${{ github.event.inputs.authcode }}'
+        $pinCode = '${{ github.event.inputs.pincode }}'
+        Start-CRDProcess -AuthCode $authCode -Pin $pinCode
 
     - name: Keep Alive
-      run: pwsh -File ./timeout.ps1
+      shell: pwsh
+      run: ./timeout.ps1
